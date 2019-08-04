@@ -11,6 +11,7 @@ const assets = [
   '/img/dish.png',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.gstatic.com/s/materialicons/v47/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
+  '/pages/fallback.html'
 ];
 
 // install event
@@ -30,7 +31,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(keys => {
       return Promise.all(
         keys
-          .filter(key => key !== staticCacheName)
+          .filter(key => key !== staticCacheName && key !== dynamicCache)
           .map(key => caches.delete(key))
       );
     })
@@ -47,6 +48,8 @@ self.addEventListener('fetch', event => {
             return fetchRes;
         });
       });
+    }).catch( () => {
+      caches.match('/pages/fallback.html');
     })
   );
 });
